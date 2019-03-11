@@ -23,7 +23,7 @@ static void	read_file(char *file, char **line)
 		free(tmp);
 	}
 	if (linecnt != 4)
-		exit (0);
+		exit (103);
 	close(fd);
 }
 
@@ -76,14 +76,14 @@ static int	save_piece(char *ln16, t_tetra **pieces)
 	{
 		if (ln16[i] != '#' && ln16[i] != '.')
 			return (0);
-		(*pieces)->config[y][x] = ln16[i];
-		x++;
+		(*pieces)->config[y][x++] = ln16[i];
 		if ((i + 1) % 4 == 0)
 		{
 			x = 0;
 			y++;
 		}
 	}
+	free(ln16);
 	return (1);
 }
 
@@ -103,7 +103,7 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, PIECELEN), pieces)))
 		{
 			lstdel(pieces);
-			exit(103);
+			exit(104);
 		}
 		npcs++;
 		i += PIECELEN;
@@ -117,7 +117,7 @@ int			main(int argc, char **argv)
 	int		npcs;
 	int		i;		// KILLME
 	t_tetra	*tmp;	// KILLME
-//	char	*square;
+//	char	**square;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
@@ -136,4 +136,5 @@ int			main(int argc, char **argv)
 		write(1, "\n", 1);
 		tmp = tmp->next;
 	}							// US
+	lstdel(&pieces);
 }
