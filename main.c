@@ -122,6 +122,8 @@ int			main(int argc, char **argv)
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
 	npcs = create_tetra_list(argv[1], &pieces);
+
+	/* print pieces list */
 	tmp = pieces;				// KILL
 	while (tmp)	
 	{
