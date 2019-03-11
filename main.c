@@ -25,7 +25,6 @@ static void	read_file(char *file, char **line)
 	if (linecnt != 4)
 		exit (0);
 	close(fd);
-	printf("%s\n", *line);	// KILLME
 }
 
 static int	move_piece(char *ln16)
@@ -45,7 +44,6 @@ static int	move_piece(char *ln16)
 	}
 	if (i > PIECESIDE)
 		shiftup = (i / PIECESIDE);
-	printf("shiftup %i, i %i\n", shiftup, i);	// KILLME
 	shiftleft = PIECESIDE;
 	i = -1;
 	/* check for empty positions to the left */
@@ -53,11 +51,8 @@ static int	move_piece(char *ln16)
 	{
 		j = -1;
 		while (++j < PIECESIDE)
-		{
 			if (ln16[i * PIECESIDE + j] == '#' && j < shiftleft)
 				shiftleft = j;
-		}
-		printf("shiftleft %i\n", shiftleft);	// KILLME
 	}
 	return (shiftup * PIECESIDE + shiftleft);
 }
@@ -70,9 +65,7 @@ static int	save_piece(char *ln16, t_tetra **pieces)
 	int	shift;
 
 	shift = move_piece(ln16);
-	printf("total shift = %i\n", shift);	// KILLME
-	ln16 = strcpy(ln16, ln16 + shift);
-	printf("fuckoff\n");	// KILLME
+	ln16 = ft_strcpy(ln16, ln16 + shift);
 	i = PIECELEN - 1;
 	while (shift--)
 		ln16[i--] = '.';
@@ -105,7 +98,6 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 	npcs = 0;
 	i = 0;
 	len = ft_strlen(line);
-	printf("len %i\n", len);
 	while (i < len)
 	{
 		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, PIECELEN), pieces)))
@@ -115,7 +107,6 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 		}
 		npcs++;
 		i += PIECELEN;
-		printf("i %i\n", i);
 	}
 	return (npcs);
 }
@@ -131,8 +122,6 @@ int			main(int argc, char **argv)
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
 	npcs = create_tetra_list(argv[1], &pieces);
-	printf("npcs = %i\n\n", npcs);	// KILLME
-
 	tmp = pieces;				// KILL
 	while (tmp)	
 	{
