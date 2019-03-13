@@ -27,66 +27,6 @@ static void	read_file(char *file, char **line)
 	close(fd);
 }
 
-static int	move_piece(char *ln16)
-{
-	int	i;
-	int	j;
-	int	shiftup;
-	int	shiftleft;
-
-	shiftup = 0;
-	i = -1;
-	while (ln16[++i])
-	{
-		/* check for empty rows */
-		if (ln16[i] == '#')
-			break;
-	}
-	if (i > PIECESIDE)
-		shiftup = (i / PIECESIDE);
-	shiftleft = PIECESIDE;
-	i = -1;
-	/* check for empty positions to the left */
-	while (++i < PIECESIDE)
-	{
-		j = -1;
-		while (++j < PIECESIDE)
-			if (ln16[i * PIECESIDE + j] == '#' && j < shiftleft)
-				shiftleft = j;
-	}
-	return (shiftup * PIECESIDE + shiftleft);
-}
-
-static int	save_piece(char *ln16, t_tetra **pieces)
-{
-	int	i;
-	int	x;
-	int	y;
-	int	shift;
-
-	shift = move_piece(ln16);
-	ln16 = ft_strcpy(ln16, ln16 + shift);
-	i = PIECELEN - 1;
-	while (shift--)
-		ln16[i--] = '.';
-	i = -1;
-	x = 0;
-	y = 0;
-	while (ln16[++i])
-	{
-		if (ln16[i] != '#' && ln16[i] != '.')
-			return (0);
-		(*pieces)->config[y][x++] = ln16[i];
-		if ((i + 1) % 4 == 0)
-		{
-			x = 0;
-			y++;
-		}
-	}
-	free(ln16);
-	return (1);
-}
-
 static int	create_tetra_list(char *file, t_tetra **pieces)
 {
 	char	*line;
@@ -100,13 +40,14 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 	len = ft_strlen(line);
 	while (i < len)
 	{
-		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, PIECELEN), pieces)))
+		printf("i %i, len %i\n", i, len);	// KILLME
+		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, LEN), pieces)))
 		{
 			lstdel(pieces);
 			exit(104);
 		}
 		npcs++;
-		i += PIECELEN;
+		i += LEN;
 	}
 	return (npcs);
 }
@@ -115,15 +56,27 @@ int			main(int argc, char **argv)
 {
 	t_tetra	*pieces;
 	int		npcs;
-	int		i;		// KILLME
+	int		size;
+	int		i;	// KILLME
 	t_tetra	*tmp;	// KILLME
 //	char	**square;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
+	pieces = NULL;
 	npcs = create_tetra_list(argv[1], &pieces);
+	printf("size = %i\n", size = (ft_sqrt_floor(npcs * 4) + 1));
+/*	square = NULL;
+	while (side)
+	{
+		if (square)
+			free(square);
+		square = malloc(
+		side = fillit(square, size, pieces);
+	}
 
-	/* print pieces list */
+
+	*//* print pieces list */
 	tmp = pieces;				// KILL
 	while (tmp)	
 	{

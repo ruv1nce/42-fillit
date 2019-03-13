@@ -6,8 +6,8 @@
 # include <fcntl.h>
 # include "libft.h"
 
-# define PIECELEN 16
-# define PIECESIDE 4
+# define LEN 16
+# define SIDE 4
 
 typedef struct		s_tetra
 {
@@ -18,5 +18,7 @@ typedef struct		s_tetra
 t_tetra				*lstnew(void);
 int					lstadd(t_tetra **lst);
 void				lstdel(t_tetra **lst);
+int	save_piece(char *ln16, t_tetra **pieces);
+int	move_piece(char *ln16);
 
 #endif
