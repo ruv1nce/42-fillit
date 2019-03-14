@@ -15,20 +15,10 @@ typedef struct		s_tetra
 {
 	int				put;
 	char			config[4][4];
-	struct s_tetra	*next;
 }					t_tetra;
 
-typedef struct		s_list
-{
-	int				count;
-	t_tetra			*head;
-	t_tetra			*tail;
-}					t_list;
-
-void				lstinit(t_list *l);
-int					addtail(t_list *l);
-void				lstdel(t_list *l);
-int					save_piece(char *ln16, t_list *lst, char c);
+void				arrinit(t_tetra **pcs, int size);
+int					save_piece(char *ln16, t_tetra *piece, char c);
 char				**create_map(int size);
 void				delete_map(char **map);
 void				print_map(char **map);

@@ -31,67 +31,48 @@ static void	read_file(char *file, char **line)
 	close(fd);
 }
 
-static int	create_tetra_list(char *file, t_list *lst)
+static int	create_arr(char *file, t_tetra **pcs)
 {
 	char	*line;
 	int		i;
 	int		len;
-	int		npcs;
+	int		pccount;
 	char	c;
 	
 	read_file(file, &line);
-	npcs = 0;
-	i = 0;
 	len = ft_strlen(line);
+	arrinit(pcs, len / LEN);
 	c = 'A';
+	pccount = 0;
+	i = 0;
 	while (i < len)
 	{
-		if (!(addtail(lst)) || !(save_piece(ft_strsub(line, i, LEN), lst, c)))
-		{
-			lstdel(lst);
-			exit(104);
-		}
-		npcs++;
+		if (!(save_piece(ft_strsub(line, i, LEN), (*pcs + pccount), c)))
+			exit(108);
+		pccount++;
 		i += LEN;
 		c++;
 	}
-	return (npcs);
+	return (pccount);
 }
-/*
-char	**create_map(int size)
-{
-	char	**map;
-	int		i;
 
-	if (!(map = malloc(size * sizeof(*map))))
-		exit(105);
-	i = -1;
-	while (++i < size)
-	{
-		if (!(map[i] = malloc(size * sizeof(**map))))
-			exit(106);
-		ft_bzero(map[i], size);
-	}
-	return (map);
-}
-*/
 int			main(int argc, char **argv)
 {
-	t_list	lst;
+	t_tetra	*pcs;
 	int		size;
+	int		pccount;
 	int		i;	// KILLME
-	t_tetra	*tmp;	// KILLME
-	char	**map;
-	char	**oldmap;
+	int		j;
+//	char	**map;
+//	char	**oldmap;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
-	lstinit(&lst);
-	size = create_tetra_list(argv[1], &lst);
-	printf("npcs = %i\n", size);
-	size = (ft_sqrt_floor(size * 4) + 1);
-	printf("size = %i\n", size);
-
+	pccount = create_arr(argv[1], &pcs);
+	printf("pccount = %i\n", pccount);	// KILLME
+	size = (ft_sqrt_floor(pccount * 4) + 1);
+	printf("size = %i\n", size);	// KILLME
+/*
 	map = NULL;
 	oldmap = NULL;
 	while (size)
@@ -109,18 +90,17 @@ int			main(int argc, char **argv)
 	delete_map(oldmap);
 
 
-	/* print pieces list */
-	tmp = lst.head;				// KILL
-	while (tmp)	
+	*//* print pieces  */
+	i = -1;
+	while (++i < pccount)	
 	{
-		i = -1;
-		while (++i < 4)
+		j = -1;
+		while (++j < SIDE)
 		{
-			write(1, tmp->config[i], 4);
+			write(1, (pcs + i)->config[j], SIDE);
 			write(1, "\n", 1);
 		}
 		write(1, "\n", 1);
-		tmp = tmp->next;
 	}							// US
-	lstdel(&lst);
+	free(pcs);
 }

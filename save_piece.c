@@ -18,7 +18,6 @@ static void	check_piece(char *s)
 		if (s[i] == '#')
 			sum += ref[i];
 	}
-	printf("%i\n", sum);
 	if (ft_binsearch(valid, sum, 19) == -1)
 		exit(105);
 }
@@ -63,12 +62,14 @@ static void	move_piece(char *ln16, int shift)
 		ln16[i--] = '.';
 }
 
-int			save_piece(char *ln16, t_list *lst, char c)
+int			save_piece(char *ln16, t_tetra *piece, char c)
 {
 	int		i;
 	int		x;
 	int		y;
 
+	if (!ln16)
+		exit(106);
 	move_piece(ln16, calc_shift(ln16));
 	check_piece(ln16);
 	i = -1;
@@ -77,9 +78,9 @@ int			save_piece(char *ln16, t_list *lst, char c)
 	while (ln16[++i])
 	{
 		if (ln16[i] == '#')
-			lst->tail->config[y][x++] = c;
+			piece->config[y][x++] = c;
 		else if (ln16[i] == '.')
-			lst->tail->config[y][x++] = ln16[i];
+			piece->config[y][x++] = ln16[i];
 		else
 			return (0);
 		if ((i + 1) % 4 == 0)

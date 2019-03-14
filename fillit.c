@@ -2,7 +2,22 @@
 
 int	fillit(char **map, int size, t_tetra *piece, int fit)
 {
-	if (size == 5 && piece)
+	if (!piece)
+	{
+		if (!(piece = find_piece(piece)))
+			return (size - 1);
+	}
+	if (put_piece(map, piece))
+	{
+		fit = fillit(map, size, piece->next, fit);
+		if (!fit)
+			remove_piece(map, piece);
+	}
+	return (fit);
+}
+
+/*	stupid version to test main
+ *	if (size == 5 && piece)
 	{
 		fit = size;
 		fit--;
@@ -11,21 +26,4 @@ int	fillit(char **map, int size, t_tetra *piece, int fit)
 	}
 	else
 		return (0);
-}
-
-/*
-int	fillit(char **map, int size, t_tetra *piece, int fit)
-{
-	if (!piece)
-		fit = size - 1;
-	else
-	{
-		if (put_piece(map, piece))
-		{
-			fit = fillit(map, size, piece->next, fit);
-			if (!fit)
-				remove_piece(map, piece);
-		}
-	}
-	return (fit);
-}*/
+*/
