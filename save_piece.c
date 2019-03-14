@@ -1,7 +1,5 @@
 #include "fillit.h"
 
-/* hash function ??? */
-/* bitwise ??? */
 static void	check_piece(char *s)
 {
 	int	ref[13] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
@@ -52,7 +50,7 @@ static int	move_piece(char *ln16)
 	return (shiftup * SIDE + shiftleft);
 }
 
-int	save_piece(char *ln16, t_tetra **pieces)
+int	save_piece(char *ln16, t_list *lst)
 {
 	int	i;
 	int	x;
@@ -72,7 +70,7 @@ int	save_piece(char *ln16, t_tetra **pieces)
 	{
 		if (ln16[i] != '#' && ln16[i] != '.')
 			return (0);
-		(*pieces)->config[y][x++] = ln16[i];
+		lst->tail->config[y][x++] = ln16[i];
 		if ((i + 1) % 4 == 0)
 		{
 			x = 0;

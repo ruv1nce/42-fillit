@@ -26,7 +26,7 @@ static void	read_file(char *file, char **line)
 	close(fd);
 }
 
-static int	create_tetra_list(char *file, t_tetra **pieces)
+static int	create_tetra_list(char *file, t_list *lst)
 {
 	char	*line;
 	int		i;
@@ -40,9 +40,9 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 	while (i < len)
 	{
 //		printf("i %i, len %i\n", i, len);	// KILLME
-		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, LEN), pieces)))
+		if (!(addtail(lst)) || !(save_piece(ft_strsub(line, i, LEN), lst)))
 		{
-			lstdel(pieces);
+			lstdel(lst);
 			exit(104);
 		}
 		npcs++;
@@ -53,7 +53,7 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 
 int			main(int argc, char **argv)
 {
-	t_tetra	*pieces;
+	t_list	lst;
 	int		npcs;
 	int		size;
 	int		i;	// KILLME
@@ -62,8 +62,8 @@ int			main(int argc, char **argv)
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
-	pieces = NULL;
-	npcs = create_tetra_list(argv[1], &pieces);
+	lstinit(&lst);
+	npcs = create_tetra_list(argv[1], &lst);
 	printf("npcs = %i, size = %i\n", npcs, size = (ft_sqrt_floor(npcs * 4) + 1));
 /*	square = NULL;
 	while (side)
@@ -76,7 +76,7 @@ int			main(int argc, char **argv)
 
 
 	*//* print pieces list */
-	tmp = pieces;				// KILL
+	tmp = lst.head;				// KILL
 	while (tmp)	
 	{
 		i = -1;
@@ -88,5 +88,5 @@ int			main(int argc, char **argv)
 		write(1, "\n", 1);
 		tmp = tmp->next;
 	}							// US
-	lstdel(&pieces);
+	lstdel(&lst);
 }
