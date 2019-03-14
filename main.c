@@ -57,7 +57,7 @@ static int	create_tetra_list(char *file, t_list *lst)
 	}
 	return (npcs);
 }
-
+/*
 char	**create_map(int size)
 {
 	char	**map;
@@ -74,32 +74,42 @@ char	**create_map(int size)
 	}
 	return (map);
 }
-
+*/
 int			main(int argc, char **argv)
 {
 	t_list	lst;
-	int		npcs;
 	int		size;
 	int		i;	// KILLME
 	t_tetra	*tmp;	// KILLME
 	char	**map;
+	char	**oldmap;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
 	lstinit(&lst);
-	npcs = create_tetra_list(argv[1], &lst);
-	printf("npcs = %i, size = %i\n", npcs, size = (ft_sqrt_floor(npcs * 4) + 1));
+	size = create_tetra_list(argv[1], &lst);
+	printf("npcs = %i\n", size);
+	size = (ft_sqrt_floor(size * 4) + 1);
+	printf("size = %i\n", size);
+
 	map = NULL;
-/*	while (size)
+	oldmap = NULL;
+	while (size)
 	{
-		if (map)
-			free(map);
 		map = create_map(size);
-		size = fillit(map, size, lst.head);
+		if ((size = fillit(map, size, lst.head, 0)))
+		{
+			if (oldmap)
+				delete_map(oldmap);
+			oldmap = map;
+		}
 	}
+	delete_map(map);
+	print_map(oldmap);
+	delete_map(oldmap);
 
 
-	*//* print pieces list */
+	/* print pieces list */
 	tmp = lst.head;				// KILL
 	while (tmp)	
 	{

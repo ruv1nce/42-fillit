@@ -13,6 +13,7 @@
 
 typedef struct		s_tetra
 {
+	int				put;
 	char			config[4][4];
 	struct s_tetra	*next;
 }					t_tetra;
@@ -28,5 +29,9 @@ void				lstinit(t_list *l);
 int					addtail(t_list *l);
 void				lstdel(t_list *l);
 int					save_piece(char *ln16, t_list *lst, char c);
+char				**create_map(int size);
+void				delete_map(char **map);
+void				print_map(char **map);
+int					fillit(char **map, int size, t_tetra *piece, int fit);
 
 #endif
