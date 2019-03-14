@@ -1,5 +1,4 @@
 #include "fillit.h"
-#include <stdio.h>	// KILLME
 
 static void	read_file(char *file, char **line)
 {
@@ -40,7 +39,7 @@ static int	create_tetra_list(char *file, t_tetra **pieces)
 	len = ft_strlen(line);
 	while (i < len)
 	{
-		printf("i %i, len %i\n", i, len);	// KILLME
+//		printf("i %i, len %i\n", i, len);	// KILLME
 		if (!(lstadd(pieces)) || !(save_piece(ft_strsub(line, i, LEN), pieces)))
 		{
 			lstdel(pieces);
@@ -65,7 +64,7 @@ int			main(int argc, char **argv)
 		write(1, "usage: ./fillit <filename>\n", 27);
 	pieces = NULL;
 	npcs = create_tetra_list(argv[1], &pieces);
-	printf("size = %i\n", size = (ft_sqrt_floor(npcs * 4) + 1));
+	printf("npcs = %i, size = %i\n", npcs, size = (ft_sqrt_floor(npcs * 4) + 1));
 /*	square = NULL;
 	while (side)
 	{

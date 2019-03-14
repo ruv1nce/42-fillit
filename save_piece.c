@@ -1,15 +1,25 @@
 #include "fillit.h"
 
 /* hash function ??? */
-/* a row of ints which cannot be sums of each other!!!
- * the ints are powers of 2 */
-static int	check_piece(char *s)
+/* bitwise ??? */
+static void	check_piece(char *s)
 {
-//	if (s[0] OK && s[1] OK && s[2] OK && s[3] OK)
-	if (s[0] == '#')
+	int	ref[13] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+	int valid[19] = {15, 23, 39, 51, 54, 71, 99, 113, 114, 116, 275, 305, 306, 547, 561, 562, 785, 802, 4369};
+
+	int	i;
+	int sum;
+
+	i = -1;
+	sum = 0;
+	while (s[++i])
 	{
-		while (s
+		if (s[i] == '#')
+			sum += ref[i];
 	}
+	printf("%i\n", sum);
+	if (ft_binsearch(valid, sum, 19) == -1)
+		exit(105);
 }
 
 static int	move_piece(char *ln16)
