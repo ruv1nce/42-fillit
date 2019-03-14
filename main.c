@@ -37,20 +37,23 @@ static int	create_tetra_list(char *file, t_list *lst)
 	int		i;
 	int		len;
 	int		npcs;
+	char	c;
 	
 	read_file(file, &line);
 	npcs = 0;
 	i = 0;
 	len = ft_strlen(line);
+	c = 'A';
 	while (i < len)
 	{
-		if (!(addtail(lst)) || !(save_piece(ft_strsub(line, i, LEN), lst)))
+		if (!(addtail(lst)) || !(save_piece(ft_strsub(line, i, LEN), lst, c)))
 		{
 			lstdel(lst);
 			exit(104);
 		}
 		npcs++;
 		i += LEN;
+		c++;
 	}
 	return (npcs);
 }

@@ -63,11 +63,11 @@ static void	move_piece(char *ln16, int shift)
 		ln16[i--] = '.';
 }
 
-int			save_piece(char *ln16, t_list *lst)
+int			save_piece(char *ln16, t_list *lst, char c)
 {
-	int	i;
-	int	x;
-	int	y;
+	int		i;
+	int		x;
+	int		y;
 
 	move_piece(ln16, calc_shift(ln16));
 	check_piece(ln16);
@@ -76,9 +76,12 @@ int			save_piece(char *ln16, t_list *lst)
 	y = 0;
 	while (ln16[++i])
 	{
-		if (ln16[i] != '#' && ln16[i] != '.')
+		if (ln16[i] == '#')
+			lst->tail->config[y][x++] = c;
+		else if (ln16[i] == '.')
+			lst->tail->config[y][x++] = ln16[i];
+		else
 			return (0);
-		lst->tail->config[y][x++] = ln16[i];
 		if ((i + 1) % 4 == 0)
 		{
 			x = 0;

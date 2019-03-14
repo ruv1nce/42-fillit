@@ -2,5 +2,5 @@
 
 int	fillit(char **map, int size, t_tetra *piece)
 {
-	
+	if (!piece)
 }

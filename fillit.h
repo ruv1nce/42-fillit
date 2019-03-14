@@ -27,6 +27,6 @@ typedef struct		s_list
 void				lstinit(t_list *l);
 int					addtail(t_list *l);
 void				lstdel(t_list *l);
-int					save_piece(char *ln16, t_list *lst);
+int					save_piece(char *ln16, t_list *lst, char c);
 
 #endif
