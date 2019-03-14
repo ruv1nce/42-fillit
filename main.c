@@ -1,5 +1,10 @@
 #include "fillit.h"
 
+/* add proper exit function: in case of any error run this function:
+ * - print error to stdout
+ * - free map
+ * - free list */
+
 static void	read_file(char *file, char **line)
 {
 	int		fd;
@@ -39,7 +44,6 @@ static int	create_tetra_list(char *file, t_list *lst)
 	len = ft_strlen(line);
 	while (i < len)
 	{
-//		printf("i %i, len %i\n", i, len);	// KILLME
 		if (!(addtail(lst)) || !(save_piece(ft_strsub(line, i, LEN), lst)))
 		{
 			lstdel(lst);
@@ -51,6 +55,23 @@ static int	create_tetra_list(char *file, t_list *lst)
 	return (npcs);
 }
 
+char	**create_map(int size)
+{
+	char	**map;
+	int		i;
+
+	if (!(map = malloc(size * sizeof(*map))))
+		exit(105);
+	i = -1;
+	while (++i < size)
+	{
+		if (!(map[i] = malloc(size * sizeof(**map))))
+			exit(106);
+		ft_bzero(map[i], size);
+	}
+	return (map);
+}
+
 int			main(int argc, char **argv)
 {
 	t_list	lst;
@@ -58,20 +79,20 @@ int			main(int argc, char **argv)
 	int		size;
 	int		i;	// KILLME
 	t_tetra	*tmp;	// KILLME
-//	char	**square;
+	char	**map;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
 	lstinit(&lst);
 	npcs = create_tetra_list(argv[1], &lst);
 	printf("npcs = %i, size = %i\n", npcs, size = (ft_sqrt_floor(npcs * 4) + 1));
-/*	square = NULL;
-	while (side)
+	map = NULL;
+/*	while (size)
 	{
-		if (square)
-			free(square);
-		square = malloc(
-		side = fillit(square, size, pieces);
+		if (map)
+			free(map);
+		map = create_map(size);
+		size = fillit(map, size, lst.head);
 	}
 
 

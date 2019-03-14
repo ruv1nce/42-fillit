@@ -1,3 +1,6 @@
 #include "fillit.h"
 
-int	fillit(t_tetra
+int	fillit(char **map, int size, t_tetra *piece)
+{
+	
+}

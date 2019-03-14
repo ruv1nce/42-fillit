@@ -29,8 +29,4 @@ int					addtail(t_list *l);
 void				lstdel(t_list *l);
 int					save_piece(char *ln16, t_list *lst);
 
-//t_tetra				*lstnew(void);
-//int					lstadd(t_tetra **lst);
-//void				lstdel(t_tetra **lst);
-
 #endif

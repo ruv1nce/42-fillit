@@ -2,7 +2,10 @@
 
 static void	check_piece(char *s)
 {
+	/* a reference grid where each cell has such value so that
+	 * any sum of n other cells can be equal to its value */
 	int	ref[13] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+	/* valid sums for each of the 19 possible tetraminos */
 	int valid[19] = {15, 23, 39, 51, 54, 71, 99, 113, 114, 116, 275, 305, 306, 547, 561, 562, 785, 802, 4369};
 
 	int	i;
@@ -20,7 +23,7 @@ static void	check_piece(char *s)
 		exit(105);
 }
 
-static int	move_piece(char *ln16)
+static int	calc_shift(char *ln16)
 {
 	int	i;
 	int	j;
@@ -50,19 +53,24 @@ static int	move_piece(char *ln16)
 	return (shiftup * SIDE + shiftleft);
 }
 
-int	save_piece(char *ln16, t_list *lst)
+static void	move_piece(char *ln16, int shift)
 {
-	int	i;
-	int	x;
-	int	y;
-	int	shift;
+	int i;
 
-	shift = move_piece(ln16);
-	check_piece(ln16);
 	ln16 = ft_strcpy(ln16, ln16 + shift);
 	i = LEN - 1;
 	while (shift--)
 		ln16[i--] = '.';
+}
+
+int			save_piece(char *ln16, t_list *lst)
+{
+	int	i;
+	int	x;
+	int	y;
+
+	move_piece(ln16, calc_shift(ln16));
+	check_piece(ln16);
 	i = -1;
 	x = 0;
 	y = 0;
