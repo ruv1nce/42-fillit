@@ -1,19 +1,119 @@
 #include "fillit.h"
 
+static int	find_empty_cell(int	*x, int *y, char **map)
+{
+	while (map[*y])
+	{
+		while (map[*y][*x])
+		{
+			if (map[*y][*x] == '.')
+				return (1);
+			(*x)++;
+		}
+		*x = 0;
+		(*y)++;
+	}
+	return (0);
+}
+
+static void	remove_piece(char **map, t_tetra *pc)
+{
+	int	x;
+	int	y;
+
+	y = -1;
+	while (map[++y])
+	{
+		x = -1;
+		while (map[y][++x])
+		{
+			if (map[y][x] == pc->c)
+				map[y][x] = '.';
+		}
+	}
+}
+
+static int	try_piece(char **map, t_tetra *pc, int x, int y, int size)
+{
+	int	i;
+	int	wd[4];
+	int	ht[4];
+
+	i = -1;
+	while (++i < 4)
+	{
+		wd[i] = pc->x[i] + x;
+		ht[i] = pc->y[i] + y;
+		if (wd[i] >= size || ht[i] >= size)
+			return (0);
+	}
+	i = -1;
+	while (++i < 4)
+	{
+		if (map[ht[i]][wd[i]] == '.')
+			map[ht[i]][wd[i]] = pc->c;
+		else
+		{
+			remove_piece(map, pc);
+			return (0);
+		}
+	}
+	return (1);
+}
+
+int	put_piece(char **map, t_tetra *pc, int size)
+{
+	int		x;
+	int		y;
+
+	y = -1;
+	while (map[++y])
+	{
+		x = -1;
+		while (map[y][++x])
+		{
+			if (!(find_empty_cell(&x, &y, map)))
+				return (0);
+			if (try_piece(map, pc, x, y, size))
+			{
+				pc->put = 1;
+				return (1);
+			}
+		}
+	}
+	return (0);
+}
+
+int	find_piece(t_tetra *pcs, int pccount)
+{
+	int	i;
+
+	i = -1;
+	while (++i < pccount)
+	{
+		if (!(pcs[i].put))
+			return (i);
+	}
+	return (-1);
+}
+
 int	fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 {
 	int	i;
 
 	/* base case: all fit */
-	if (!(find_piece(pcs)))
+	if ((i = find_piece(pcs, pccount)) == -1)
 		return (size - 1);
-	i = -1;
-	while (++i < pccount && !fit)
+	while (i < pccount && !fit)
 	{
-		if (put_piece(map, pcs[i]))
-			fit = fillit(map, size, &pcs[i + 1], pccount - 1, fit);
-		if (!fit)
-			remove_piece(map, piece);
+		if (!(pcs[i].put))
+		{
+			if (put_piece(map, &pcs[i], size))
+				fit = fillit(map, size, pcs, pccount, fit);
+			if (!fit)
+				remove_piece(map, &pcs[i]);
+		}
+		i++;
 	}
 	return (fit);
 }

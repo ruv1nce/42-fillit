@@ -37,21 +37,23 @@ static int	create_arr(char *file, t_tetra **pcs)
 	int		i;
 	int		len;
 	int		pccount;
-	char	c;
+	char	ch;
 	
 	read_file(file, &line);
+	printf("%s\n", line);	// 	KILLME
 	len = ft_strlen(line);
+	printf("len = %i\n", len);	// 	KILLME
 	arrinit(pcs, len / LEN);
-	c = 'A';
+	ch = 'A';
 	pccount = 0;
 	i = 0;
 	while (i < len)
 	{
-		if (!(save_piece(ft_strsub(line, i, LEN), (*pcs + pccount), c)))
+		if (!(save_piece(ft_strsub(line, i, LEN), (*pcs + pccount), ch)))
 			exit(108);
 		pccount++;
 		i += LEN;
-		c++;
+		ch++;
 	}
 	return (pccount);
 }
@@ -61,10 +63,9 @@ int			main(int argc, char **argv)
 	t_tetra	*pcs;
 	int		size;
 	int		pccount;
-	int		i;	// KILLME
-	int		j;
 	char	**map;
 	char	**oldmap;
+	int		i;	// KILLME
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
@@ -73,34 +74,34 @@ int			main(int argc, char **argv)
 	size = (ft_sqrt_floor(pccount * 4) + 1);
 	printf("size = %i\n", size);	// KILLME
 
+	/* print pieces */
+	i = -1;
+	while (++i < pccount)
+	{
+		printf("\npiece %i\n", i);
+		printf("  |0 1 2 3\n--|-------\nx |%i %i %i %i\ny |%i %i %i %i\n", pcs[i].x[0], pcs[i].x[1], pcs[i].x[2], pcs[i].x[3], pcs[i].y[0], pcs[i].y[1], pcs[i].y[2], pcs[i].y[3]);
+	}
+
 	map = NULL;
 	oldmap = NULL;
 	while (size)
 	{
 		map = create_map(size);
+		printf("empty map:\n");	// KILLME
+		print_map(map);	// KILLME
 		if ((size = fillit(map, size, pcs, pccount, 0)))
 		{
 			if (oldmap)
 				delete_map(oldmap);
 			oldmap = map;
+			printf("filled map:\n");	// KILLME
+			print_map(map);	// KILLME
 		}
 	}
 	delete_map(map);
+	printf("result:\n");	// KILLME
 	print_map(oldmap);
 	delete_map(oldmap);
 
-
-	/* print pieces  */
-	i = -1;
-	while (++i < pccount)	
-	{
-		j = -1;
-		while (++j < SIDE)
-		{
-			write(1, (pcs + i)->config[j], SIDE);
-			write(1, "\n", 1);
-		}
-		write(1, "\n", 1);
-	}							// US
 	free(pcs);
 }

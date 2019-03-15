@@ -4,19 +4,26 @@ static void	check_piece(char *s)
 {
 	/* a reference grid where each cell has such value so that
 	 * any sum of n other cells can be equal to its value */
-	int	ref[13] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+	int	ref[13] = {REFWEIGHTS};
 	/* valid sums for each of the 19 possible tetraminos */
-	int valid[19] = {15, 23, 39, 51, 54, 71, 99, 113, 114, 116, 275, 305, 306, 547, 561, 562, 785, 802, 4369};
+	int valid[19] = {VALIDSUMS};
 
 	int	i;
 	int sum;
+	int	cnt;
 
 	i = -1;
 	sum = 0;
+	cnt = 0;
 	while (s[++i])
 	{
 		if (s[i] == '#')
+		{
 			sum += ref[i];
+			cnt++;
+		}
+		else if (s[i] != '.')
+			exit(109);
 	}
 	if (ft_binsearch(valid, sum, 19) == -1)
 		exit(105);
@@ -62,31 +69,24 @@ static void	move_piece(char *ln16, int shift)
 		ln16[i--] = '.';
 }
 
-int			save_piece(char *ln16, t_tetra *piece, char c)
+int			save_piece(char *ln16, t_tetra *piece, char ch)
 {
 	int		i;
-	int		x;
-	int		y;
+	int		k;
 
 	if (!ln16)
 		exit(106);
 	move_piece(ln16, calc_shift(ln16));
 	check_piece(ln16);
+	piece->c = ch;
 	i = -1;
-	x = 0;
-	y = 0;
+	k = -1;
 	while (ln16[++i])
 	{
 		if (ln16[i] == '#')
-			piece->config[y][x++] = c;
-		else if (ln16[i] == '.')
-			piece->config[y][x++] = ln16[i];
-		else
-			return (0);
-		if ((i + 1) % 4 == 0)
 		{
-			x = 0;
-			y++;
+			piece->x[++k] = i % 4;
+			piece->y[k] = i / 4;
 		}
 	}
 	free(ln16);
