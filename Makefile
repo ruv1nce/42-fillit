@@ -1,19 +1,28 @@
 NAME = fillit
 
-SRCS = main.c fillit.c map.c support.c save_piece.c 
-OBJS = $(SRCS:.c=.o) libft.a
+SRC = main.c fillit.c map.c support.c save_piece.c
+
+OBJ = $(SRC:.c=.o)
+
+LIBFT = includes/libft.a
+
+HEADER = -c -I fillit.h
 
 all: $(NAME)
 
-$(NAME):
-	gcc -Wall -Wextra -Werror -c $(SRCS)
-	ar rc $(NAME) $(OBJS)
-	ranlib $(NAME)
+$(OBJ): %.o: %.c
+		@gcc -c -Wall -Werror -Wextra -I includes/ $< -o $@
+
+$(LIBFT):
+	@make -C includes
+
+$(NAME): $(LIBFT) $(OBJ)
+	@gcc $(OBJ) $(LIBFT) -o $(NAME)
 
 clean:
-	rm -f $(OBJS)
+	/bin/rm -f $(OBJ)
 
-fclean:	clean
-	rm -f $(NAME)
+fclean: clean
+	/bin/rm -f $(NAME)
 
 re: fclean all
