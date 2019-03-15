@@ -102,7 +102,7 @@ int	fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 {
 	int	i;
 
-	/* base case: all fit */
+	/* base case: all fit  */
 	if ((i = find_piece(pcs, pccount)) == -1)
 		return (size - 1);
 	while (i < pccount && !fit)
