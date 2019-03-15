@@ -31,6 +31,7 @@ static void	remove_piece(char **map, t_tetra *pc)
 				map[y][x] = '.';
 		}
 	}
+	pc->put = 0;
 }
 
 static int	try_piece(char **map, t_tetra *pc, int x, int y, int size)
@@ -111,6 +112,7 @@ int	fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 			if (put_piece(map, &pcs[i], size))
 				fit = fillit(map, size, pcs, pccount, fit);
 			if (!fit)
+				/* it runs excessively with a piece that wasn't put */
 				remove_piece(map, &pcs[i]);
 		}
 		i++;
