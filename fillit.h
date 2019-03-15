@@ -22,6 +22,6 @@ int					save_piece(char *ln16, t_tetra *piece, char c);
 char				**create_map(int size);
 void				delete_map(char **map);
 void				print_map(char **map);
-int					fillit(char **map, int size, t_tetra *piece, int fit);
+int					fillit(char **map, int size, t_tetra *pcs, int pccount, int fit);
 
 #endif

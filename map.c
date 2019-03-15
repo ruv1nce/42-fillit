@@ -14,7 +14,7 @@ char	**create_map(int size)
 		if (!(map[i] = ft_strnew(size)))
 			exit(106);
 		ft_bchar(map[i], '.', size);
-		printf("%s\n", map[i]);
+		printf("%s\n", map[i]); //	KILLME
 	}
 	return (map);
 }

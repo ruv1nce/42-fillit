@@ -1,23 +1,26 @@
 #include "fillit.h"
 
-int	fillit(char **map, int size, t_tetra *piece, int fit)
+int	fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 {
-	if (!piece)
+	int	i;
+
+	/* base case: all fit */
+	if (!(find_piece(pcs)))
+		return (size - 1);
+	i = -1;
+	while (++i < pccount && !fit)
 	{
-		if (!(piece = find_piece(piece)))
-			return (size - 1);
-	}
-	if (put_piece(map, piece))
-	{
-		fit = fillit(map, size, piece->next, fit);
+		if (put_piece(map, pcs[i]))
+			fit = fillit(map, size, &pcs[i + 1], pccount - 1, fit);
 		if (!fit)
 			remove_piece(map, piece);
 	}
 	return (fit);
 }
 
-/*	stupid version to test main
- *	if (size == 5 && piece)
+		
+	/* stupid version to test main */
+/* 	if (size == 5 && pcs && pccount)
 	{
 		fit = size;
 		fit--;
@@ -25,5 +28,5 @@ int	fillit(char **map, int size, t_tetra *piece, int fit)
 		return (fit);
 	}
 	else
-		return (0);
-*/
+		return (0);*/
+

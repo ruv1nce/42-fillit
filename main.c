@@ -63,8 +63,8 @@ int			main(int argc, char **argv)
 	int		pccount;
 	int		i;	// KILLME
 	int		j;
-//	char	**map;
-//	char	**oldmap;
+	char	**map;
+	char	**oldmap;
 
 	if (argc != 2)
 		write(1, "usage: ./fillit <filename>\n", 27);
@@ -72,13 +72,13 @@ int			main(int argc, char **argv)
 	printf("pccount = %i\n", pccount);	// KILLME
 	size = (ft_sqrt_floor(pccount * 4) + 1);
 	printf("size = %i\n", size);	// KILLME
-/*
+
 	map = NULL;
 	oldmap = NULL;
 	while (size)
 	{
 		map = create_map(size);
-		if ((size = fillit(map, size, lst.head, 0)))
+		if ((size = fillit(map, size, pcs, pccount, 0)))
 		{
 			if (oldmap)
 				delete_map(oldmap);
@@ -90,7 +90,7 @@ int			main(int argc, char **argv)
 	delete_map(oldmap);
 
 
-	*//* print pieces  */
+	/* print pieces  */
 	i = -1;
 	while (++i < pccount)	
 	{
