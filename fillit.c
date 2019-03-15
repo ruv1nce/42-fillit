@@ -1,5 +1,57 @@
 #include "fillit.h"
 
+static int	is_four_cell_block(int x, int y, char **map)
+{
+	int	cnt;
+
+	map[y][x] = 'F';
+	cnt = 1;
+	/* scan the "first" row left to right */
+	while (map[y][++x])
+	{
+		if (map[y][x] == '.' && map[y][x - 1] == 'F')
+		{
+			map[y][x] = 'F';
+			cnt++;
+		}
+	}
+	/* scan the other rows */
+	while (map[++y])
+	{
+		/* scan row left direction */
+		while (--x >= 0)
+		{
+			if (map[y][x] == '.' && (map[y][x + 1] == 'F' || map[y - 1][x] == 'F'))
+			{				
+				   map[y][x] = 'F';
+				   cnt++;
+			}
+		}
+		/* scan row right direction */
+		while (map[y][++x])
+		{
+			if (map[y][x] == '.' && map[y][x - 1] == 'F')
+			{
+				map[y][x] = 'F';
+				cnt++;
+			}
+		}
+	}
+	y = -1;
+	while (map[++y])
+	{
+		x = -1;
+		while (map[y][++x])
+		{
+			if (map[y][x] == 'F')
+				map[y][x] = '.';
+		}
+	}
+	if (cnt >= 4)
+		return (1);
+	return (0);
+}
+
 static int	find_empty_cell(int	*x, int *y, char **map)
 {
 	while (map[*y])
@@ -7,7 +59,10 @@ static int	find_empty_cell(int	*x, int *y, char **map)
 		while (map[*y][*x])
 		{
 			if (map[*y][*x] == '.')
-				return (1);
+			{
+				if ((is_four_cell_block(*x, *y, map)))
+					return (1);
+			}
 			(*x)++;
 		}
 		*x = 0;

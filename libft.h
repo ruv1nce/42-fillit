@@ -88,7 +88,7 @@ void	ft_print_hex(unsigned int nb);
 int		*ft_int_range(int start, int end);
 char	*ft_rotx(char *s, int x);
 void	ft_bchar(void *s, char c, size_t n);
-int		ft_sqrt_floor(int x);
+int		ft_sqrt(int x, int mode);
 int		ft_binsearch(int *arr, int num, int size);
 
 int		ft_gnl(const int fd, char **line);

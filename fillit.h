@@ -21,6 +21,13 @@ typedef struct		s_tetra
 	int				y[4];
 }					t_tetra;
 
+typedef struct		s_coord
+{
+	int				x;
+	int				y;
+	int				visited;
+}					t_coord;
+
 void				arrinit(t_tetra **pcs, int size);
 int					save_piece(char *ln16, t_tetra *piece, char ch);
 char				**create_map(int size);
