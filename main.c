@@ -1,9 +1,18 @@
 #include "fillit.h"
 
-/* add proper exit function: in case of any error run this function:
- * - print error to stdout
- * - free map
- * - free list */
+void		kill_all(char **line, t_tetra **pcs, char **map, char **oldmap)
+{
+	if (line && *line)
+		free(*line);
+	if (pcs)
+		free(*pcs);
+	if (map)
+		delete_map(map);
+	if (oldmap)
+		delete_map(oldmap);
+	write(1, "error\n", 6);
+	exit(0);
+}
 
 static void	read_file(char *file, char **line)
 {
@@ -14,7 +23,7 @@ static void	read_file(char *file, char **line)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		exit(101);
+		kill_all(NULL, NULL, NULL, NULL);
 	*line = NULL;
 	resume = 1;
 	linecnt = 0;
@@ -22,12 +31,12 @@ static void	read_file(char *file, char **line)
 	{
 		linecnt = (linecnt == 4) ? 0 : linecnt + 1;
 		if ((!(linecnt) && ft_strlen(tmp)) || (linecnt && ft_strlen(tmp) != 4))
-			exit(102);
+			kill_all(line, NULL, NULL, NULL);
 		*line = ft_strjoin(*line, tmp);
 		free(tmp);
 	}
 	if (linecnt != 4)
-		exit (103);
+		kill_all(line, NULL, NULL, NULL);
 	close(fd);
 }
 
@@ -43,18 +52,20 @@ static int	create_arr(char *file, t_tetra **pcs)
 //	printf("%s\n", line);	// 	KILLME
 	len = ft_strlen(line);
 //	printf("len = %i\n", len);	// 	KILLME
-	arrinit(pcs, len / LEN);
+	if (!(arrinit(pcs, len / LEN)))
+		kill_all(&line, NULL, NULL, NULL);
 	ch = 'A';
 	pccount = 0;
 	i = 0;
 	while (i < len)
 	{
 		if (!(save_piece(ft_strsub(line, i, LEN), (*pcs + pccount), ch)))
-			exit(108);
+			kill_all(&line, pcs, NULL, NULL);
 		pccount++;
 		i += LEN;
 		ch++;
 	}
+	free(line);
 	return (pccount);
 }
 
@@ -63,8 +74,6 @@ int			main(int argc, char **argv)
 	t_tetra	*pcs;
 	int		size;
 	int		pccount;
-	char	**map;
-	char	**oldmap;
 //	int		i;	// KILLME
 
 	if (argc != 2)
@@ -85,27 +94,5 @@ int			main(int argc, char **argv)
 		printf("  |0 1 2 3\n--|-------\nx |%i %i %i %i\ny |%i %i %i %i\n", pcs[i].x[0], pcs[i].x[1], pcs[i].x[2], pcs[i].x[3], pcs[i].y[0], pcs[i].y[1], pcs[i].y[2], pcs[i].y[3]);
 	}
 */
-	map = NULL;
-	oldmap = NULL;
-	while (size && (size * size > pccount * 4))
-	{
-		map = create_map(size);
-		arrinit(&pcs, pccount);
-//		printf("empty map:\n");	// KILLME
-//		print_map(map);	// KILLME
-		if ((size = fillit(map, size, pcs, pccount, 0)))
-		{
-			if (oldmap)
-				delete_map(oldmap);
-			oldmap = map;
-//			printf("filled map:\n");	// KILLME
-//			print_map(map);	// KILLME
-		}
-	}
-//	delete_map(map);
-//	printf("result:\n");	// KILLME
-	print_map(oldmap);
-	delete_map(oldmap);
-
-	free(pcs);
+	mapinator(pcs, pccount, size);
 }

@@ -4,16 +4,18 @@ static int	is_four_cell_block(int x, int y, char **map)
 {
 	int	cnt;
 
-	map[y][x] = 'F';
+	map[y][x] = '@';
 	cnt = 1;
 	/* scan the "first" row left to right */
 	while (map[y][++x])
 	{
-		if (map[y][x] == '.' && map[y][x - 1] == 'F')
+		if (map[y][x] == '.' && map[y][x - 1] == '@')
 		{
-			map[y][x] = 'F';
+			map[y][x] = '@';
 			cnt++;
 		}
+		if (cnt >= 4)
+			break;
 	}
 	/* scan the other rows */
 	while (map[++y])
@@ -21,29 +23,34 @@ static int	is_four_cell_block(int x, int y, char **map)
 		/* scan row left direction */
 		while (--x >= 0)
 		{
-			if (map[y][x] == '.' && (map[y][x + 1] == 'F' || map[y - 1][x] == 'F'))
+			if (map[y][x] == '.' && (map[y][x + 1] == '@' || map[y - 1][x] == '@'))
 			{				
-				   map[y][x] = 'F';
+				   map[y][x] = '@';
 				   cnt++;
 			}
+			if (cnt >= 4)
+				break;
 		}
 		/* scan row right direction */
 		while (map[y][++x])
 		{
-			if (map[y][x] == '.' && map[y][x - 1] == 'F')
+			if (map[y][x] == '.' && map[y][x - 1] == '@')
 			{
-				map[y][x] = 'F';
+				map[y][x] = '@';
 				cnt++;
 			}
+			if (cnt >= 4)
+				break;
 		}
 	}
+	print_map(map);
 	y = -1;
 	while (map[++y])
 	{
 		x = -1;
 		while (map[y][++x])
 		{
-			if (map[y][x] == 'F')
+			if (map[y][x] == '@')
 				map[y][x] = '.';
 		}
 	}

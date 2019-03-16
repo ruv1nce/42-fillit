@@ -1,24 +1,24 @@
 #include "fillit.h"
 
-char	**create_map(int size)
+static char	**create_map(int size)
 {
 	char	**map;
 	int		i;
 
 	if (!(map = malloc((size + 1) * sizeof(*map))))
-		exit(105);
+		return (NULL);
 	map[size] = NULL;
 	i = -1;
 	while (++i < size)
 	{
 		if (!(map[i] = ft_strnew(size)))
-			exit(106);
+			exit(1);
 		ft_bchar(map[i], '.', size);
 	}
 	return (map);
 }
 
-void	delete_map(char **map)
+void		delete_map(char **map)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ void	delete_map(char **map)
 	free(map);
 }
 
-void	print_map(char **map)
+void		print_map(char **map)
 {
 	int	i;
 	int	j;
@@ -41,4 +41,34 @@ void	print_map(char **map)
 			write(1, &map[i][j], 1);
 		write(1, "\n", 1);
 	}
+}
+
+void	mapinator(t_tetra *pcs, int pccount, int size)
+{
+	char	**map;
+	char	**oldmap;
+
+	map = NULL;
+	oldmap = NULL;
+	while (size && (size * size >= pccount * 4))
+	{
+		if (!(map = create_map(size)))
+			kill_all(NULL, &pcs, map, oldmap);
+		arrinit(&pcs, pccount);
+//		printf("empty map:\n");	// KILLME
+//		print_map(map);	// KILLME
+		if ((size = fillit(map, size, pcs, pccount, 0)))
+		{
+			if (oldmap)
+				delete_map(oldmap);
+			oldmap = map;
+//			printf("filled map:\n");	// KILLME
+//			print_map(map);	// KILLME
+		}
+	}
+//	delete_map(map);
+//	printf("result:\n");	// KILLME
+	print_map(oldmap);
+	delete_map(oldmap);
+	free(pcs);
 }

@@ -1,9 +1,9 @@
 #include "fillit.h"
 
-static void	check_piece(char *s)
+int			check_piece(char *s)
 {
 	/* a reference grid where each cell has such value so that
-	 * any sum of n other cells can be equal to its value */
+	 * any sum of n other cells cannot be equal to its value */
 	int	ref[13] = {REFWEIGHTS};
 	/* valid sums for each of the 19 possible tetraminos */
 	int valid[19] = {VALIDSUMS};
@@ -23,10 +23,11 @@ static void	check_piece(char *s)
 			cnt++;
 		}
 		else if (s[i] != '.')
-			exit(109);
+			return (0);
 	}
 	if (ft_binsearch(valid, sum, 19) == -1)
-		exit(105);
+		return (0);
+	return (1);
 }
 
 static int	calc_shift(char *ln16)
@@ -75,9 +76,13 @@ int			save_piece(char *ln16, t_tetra *piece, char ch)
 	int		k;
 
 	if (!ln16)
-		exit(106);
+		return (0);
 	move_piece(ln16, calc_shift(ln16));
-	check_piece(ln16);
+	if (!(check_piece(ln16)))
+	{
+		free(ln16);
+		return (0);
+	}
 	piece->c = ch;
 	i = -1;
 	k = -1;

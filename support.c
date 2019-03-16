@@ -1,15 +1,16 @@
 #include "fillit.h"
 
-void	arrinit(t_tetra **pcs, int size)
+int	arrinit(t_tetra **pcs, int size)
 {
 	int	i;
 
 	if (!*pcs)
 	{
 		if (!(*pcs = malloc(size * sizeof(**pcs))))
-			exit(104);
+			return (0);
 	}
 	i = -1;
 	while (++i < size)
 		(*pcs + i)->put = 0;
+	return (1);
 }
