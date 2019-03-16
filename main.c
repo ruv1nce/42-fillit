@@ -74,25 +74,17 @@ int			main(int argc, char **argv)
 	t_tetra	*pcs;
 	int		size;
 	int		pccount;
-//	int		i;	// KILLME
 
 	if (argc != 2)
+	{
 		write(1, "usage: ./fillit <filename>\n", 27);
+		return (1);
+	}
 	pcs = NULL;
 	pccount = create_arr(argv[1], &pcs);
 //	printf("pccount = %i\n", pccount);	// KILLME
 	size = (ft_sqrt(pccount * 4, 1) + 1);
 	if (size < 4)
 		size = 4;
-//	printf("size = %i\n", size);	// KILLME
-
-	/* print pieces */
-/*	i = -1;
-	while (++i < pccount)
-	{
-		printf("\npiece %i\n", i);
-		printf("  |0 1 2 3\n--|-------\nx |%i %i %i %i\ny |%i %i %i %i\n", pcs[i].x[0], pcs[i].x[1], pcs[i].x[2], pcs[i].x[3], pcs[i].y[0], pcs[i].y[1], pcs[i].y[2], pcs[i].y[3]);
-	}
-*/
 	mapinator(pcs, pccount, size);
 }

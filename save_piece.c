@@ -45,7 +45,7 @@ static int	calc_shift(char *ln16)
 		if (ln16[i] == '#')
 			break;
 	}
-	if (i > SIDE)
+	if (i >= SIDE)
 		shiftup = (i / SIDE);
 	shiftleft = SIDE;
 	i = -1;
@@ -72,8 +72,9 @@ static void	move_piece(char *ln16, int shift)
 
 int			save_piece(char *ln16, t_tetra *piece, char ch)
 {
-	int		i;
-	int		k;
+	int	i;
+	int	j;
+	int	k;
 
 	if (!ln16)
 		return (0);
@@ -86,11 +87,18 @@ int			save_piece(char *ln16, t_tetra *piece, char ch)
 	piece->c = ch;
 	i = -1;
 	k = -1;
+	j = -1;
 	while (ln16[++i])
 	{
 		if (ln16[i] == '#')
 		{
-			piece->x[++k] = i % 4;
+			if (j == -1)
+			{
+				j = i;
+				piece->x[++k] = 0;
+			}
+			else
+				piece->x[++k] = i % 4 - j;
 			piece->y[k] = i / 4;
 		}
 	}
