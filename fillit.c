@@ -1,65 +1,32 @@
 #include "fillit.h"
 
-static int	is_four_cell_block(int x, int y, char **map)
+static int	is_four_cell_block(int x, int y, char **map, int size)
 {
-	int	cnt;
+	int 	cnt;
+	int		i;
+	t_coord dogs[4];	
 
-	map[y][x] = '@';
-	cnt = 1;
-	/* scan the "first" row left to right */
-	while (map[y][++x])
+	dogsinit(dogs);
+	cnt = 0;
+	flood_fill(x, y, map, size, &cnt, &dogs[0]);
+	/* think of keeping dogs if cnt < 4 */
+	if (cnt)
 	{
-		if (map[y][x] == '.' && map[y][x - 1] == '@')
-		{
-			map[y][x] = '@';
-			cnt++;
-		}
-		if (cnt >= 4)
-			break;
+//		print_map(map);
+//		write(1, "\n", 1);
+		/* clear dogs */
+		i = -1;
+		while (++i < cnt)
+			map[dogs[i].y][dogs[i].x] = '.';
+//		print_map(map);
+//		write(1, "\n", 1);
 	}
-	/* scan the other rows */
-	while (map[++y])
-	{
-		/* scan row left direction */
-		while (--x >= 0)
-		{
-			if (map[y][x] == '.' && (map[y][x + 1] == '@' || map[y - 1][x] == '@'))
-			{				
-				   map[y][x] = '@';
-				   cnt++;
-			}
-			if (cnt >= 4)
-				break;
-		}
-		/* scan row right direction */
-		while (map[y][++x])
-		{
-			if (map[y][x] == '.' && map[y][x - 1] == '@')
-			{
-				map[y][x] = '@';
-				cnt++;
-			}
-			if (cnt >= 4)
-				break;
-		}
-	}
-	print_map(map);
-	y = -1;
-	while (map[++y])
-	{
-		x = -1;
-		while (map[y][++x])
-		{
-			if (map[y][x] == '@')
-				map[y][x] = '.';
-		}
-	}
-	if (cnt >= 4)
+	if (cnt >= 4) //
 		return (1);
 	return (0);
 }
 
-static int	find_empty_cell(int	*x, int *y, char **map)
+static int	find_empty_cell(int	*x, int *y, char **map, int size)
 {
 	while (map[*y])
 	{
@@ -67,7 +34,7 @@ static int	find_empty_cell(int	*x, int *y, char **map)
 		{
 			if (map[*y][*x] == '.')
 			{
-				if ((is_four_cell_block(*x, *y, map)))
+				if ((is_four_cell_block(*x, *y, map, size)))
 					return (1);
 			}
 			(*x)++;
@@ -135,7 +102,7 @@ int	put_piece(char **map, t_tetra *pc, int size)
 		x = -1;
 		while (map[y][++x])
 		{
-			if (!(find_empty_cell(&x, &y, map)))
+			if (!(find_empty_cell(&x, &y, map, size)))
 				return (0);
 			if (try_piece(map, pc, x, y, size))
 			{
@@ -164,17 +131,20 @@ int	fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 {
 	int	i;
 
-	/* base case: all fit  */
+	/* base case: all pieces have been put */
 	if ((i = find_piece(pcs, pccount)) == -1)
 		return (size - 1);
+	/* iterate through unput pieces */
 	while (i < pccount && !fit)
 	{
 		if (!(pcs[i].put))
 		{
+			/* if piece is put, run fillit again */
 			if (put_piece(map, &pcs[i], size))
 				fit = fillit(map, size, pcs, pccount, fit);
 			if (!fit)
-				/* it runs excessively with a piece that wasn't put */
+				/* it runs excessively with a piece that wasn't put
+				 * add curly braces under put-piece-if */
 				remove_piece(map, &pcs[i]);
 		}
 		i++;

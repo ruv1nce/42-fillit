@@ -25,7 +25,6 @@ typedef struct		s_coord
 {
 	int				x;
 	int				y;
-	int				visited;
 }					t_coord;
 
 int					arrinit(t_tetra **pcs, int size);
@@ -35,5 +34,7 @@ int					fillit(char **map, int size, t_tetra *pcs, int pccount, int fit);
 void				kill_all(char **line, t_tetra **pcs, char **map, char **oldmap);
 void				mapinator(t_tetra *pcs, int pccount, int size);
 void				print_map(char **map);
+void				flood_fill(int x, int y, char **map, int size, int *cnt, t_coord *dogs);
+void				dogsinit(t_coord *dogs);
 
 #endif
