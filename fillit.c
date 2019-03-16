@@ -1,32 +1,5 @@
 #include "fillit.h"
 
-static int	is_four_cell_block(int x, int y, char **map, int size)
-{
-	int 	cnt;
-	int		i;
-	/* cells where the '@' chars will be after flood_fill */
-	t_coord dogs[4];	
-
-	coordinit(dogs);
-	cnt = 0;
-	flood_fill(x, y, map, size, &cnt, &dogs[0]);
-	/* think of keeping dogs if cnt < 4 */
-	if (cnt)
-	{
-//		print_map(map);
-//		write(1, "\n", 1);
-		/* clear dogs */
-		i = -1;
-		while (++i < cnt)
-			map[dogs[i].y][dogs[i].x] = '.';
-//		print_map(map);
-//		write(1, "\n", 1);
-	}
-	if (cnt >= 4) //
-		return (1);
-	return (0);
-}
-
 static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
 {
 	int	i;
@@ -76,7 +49,7 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 		x = -1;
 		while (map[y][++x])
 		{
-			if ((map[y][x] == '.') && ((is_four_cell_block(x, y, map, size))))
+			if (map[y][x] == '.')
 			{
 				if (try_piece(map, pc, x, y, size, cur))
 				{
