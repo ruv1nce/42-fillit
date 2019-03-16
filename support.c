@@ -1,14 +1,14 @@
 #include "fillit.h"
 
-void	dogsinit(t_coord *dogs)
+void	coordinit(t_coord *cells)
 {
 	int	i;
 
 	i = -1;
 	while (++i < 4)
 	{
-		dogs[i].x = 0;
-		dogs[i].y = 0;
+		cells[i].x = 0;
+		cells[i].y = 0;
 	}
 }
 

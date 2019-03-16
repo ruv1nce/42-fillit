@@ -35,6 +35,6 @@ void				kill_all(char **line, t_tetra **pcs, char **map, char **oldmap);
 void				mapinator(t_tetra *pcs, int pccount, int size);
 void				print_map(char **map);
 void				flood_fill(int x, int y, char **map, int size, int *cnt, t_coord *dogs);
-void				dogsinit(t_coord *dogs);
+void				coordinit(t_coord *cells);
 
 #endif
