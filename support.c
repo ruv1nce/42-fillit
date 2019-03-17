@@ -1,11 +1,11 @@
 #include "fillit.h"
 
-void	coordinit(t_coord *cells)
+void	coordinit(t_coord *cells, int size)
 {
 	int	i;
 
 	i = -1;
-	while (++i < 4)
+	while (++i < size)
 	{
 		cells[i].x = 0;
 		cells[i].y = 0;

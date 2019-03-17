@@ -40,9 +40,42 @@ static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *c
 
 static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 {
-	int		x;
+	while (map[cur[4].y] && !pc->put)
+	{
+		while (map[cur[4].y][cur[4].x] && !pc->put)
+		{
+			if (map[cur[4].y][cur[4].x] == '.')
+			{
+				if (try_piece(map, pc, cur[4].x, cur[4].y, size, cur))
+				{
+					write(1, "try\n", 4);
+					write(1, "x:", 2);
+					ft_putnbr(cur[4].x);
+					write(1, " y:", 3);
+					ft_putnbr(cur[4].y);
+					write(1, "\n", 1);
+					print_map(map);
+					write(1, "\n", 1);
+					pc->put = 1;
+				}				
+			}
+			cur[4].x += 1;
+			if (pc->put)
+				return (1);
+		}
+		cur[4].y += 1;
+		cur[4].x = 0;
+	}
+	return (0);
+}
+
+
+
+
+/*	int		x;
 	int		y;
 
+	
 	y = -1;
 	while (map[++y])
 	{
@@ -53,8 +86,8 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 			{
 				if (try_piece(map, pc, x, y, size, cur))
 				{
-//					print_map(map);
-//					write(1, "\n", 1);
+					print_map(map);
+					write(1, "\n", 1);
 					pc->put = 1;
 					return (1);
 				}
@@ -62,7 +95,7 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 		}
 	}
 	return (0);
-}
+}*/
 
 int			find_piece(t_tetra *pcs, int pccount)
 {
@@ -80,23 +113,38 @@ int			find_piece(t_tetra *pcs, int pccount)
 int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 {
 	int	i;
-	/* cells where the current piece will be put */
-	t_coord cur[4];
+	/* cells where the current piece will be put (cur[0] to cur [3]) */
+	/* indexes cur[4].x and cut[4].y will be used to store the current cell coordinates
+	 * when iterating through map and trying differenet starting positions for each piece */
+	t_coord cur[CUR_SIZE];
 
-	coordinit(cur);
+//	coordinit(cur);
 	/* base case: all pieces have been put */
 	if ((i = find_piece(pcs, pccount)) == -1)
 		return (size - 1);
 	/* iterate through unput pieces */
 	while (i < pccount && !fit)
 	{
-		if (!(pcs[i].put))
+		/* iterate through map cells trying current piece */
+		coordinit(cur, CUR_SIZE);
+		while (map[cur[4].y] && map[cur[4].y][cur[4].x] && !(pcs[i].put))
 		{
-			/* if piece is put, run fillit again */
-			if (put_piece(map, &pcs[i], size, cur))
-				fit = fillit(map, size, pcs, pccount, fit);
-			if (!fit && pcs[i].put)
-				remove_piece(map, &pcs[i], cur);
+					write(1, "fillit\n", 7);
+					write(1, "x:", 2);
+					ft_putnbr(cur[4].x);
+					write(1, " y:", 3);
+					ft_putnbr(cur[4].y);
+					write(1, "\n", 1);
+					print_map(map);
+					write(1, "\n", 1);
+			if (!(pcs[i].put))
+			{
+				/* if piece is put, run fillit again */
+				if (put_piece(map, &pcs[i], size, cur))
+					fit = fillit(map, size, pcs, pccount, fit);
+				if (!fit && pcs[i].put)
+					remove_piece(map, &pcs[i], cur);
+			}
 		}
 		i++;
 	}
