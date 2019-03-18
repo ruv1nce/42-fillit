@@ -54,7 +54,7 @@ void	mapinator(t_tetra *pcs, int pccount, int size)
 	{
 		if (!(map = create_map(size)))
 			kill_all(NULL, &pcs, map, oldmap);
-		arrinit(&pcs, pccount);
+		arrinit(&pcs, pccount, 1);
 //		printf("empty map:\n");	// KILLME
 //		print_map(map);	// KILLME
 		if ((size = fillit(map, size, pcs, pccount, 0)))

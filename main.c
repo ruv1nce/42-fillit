@@ -52,7 +52,7 @@ static int	create_arr(char *file, t_tetra **pcs)
 //	printf("%s\n", line);	// 	KILLME
 	len = ft_strlen(line);
 //	printf("len = %i\n", len);	// 	KILLME
-	if (!(arrinit(pcs, len / LEN)))
+	if (!(arrinit(pcs, len / LEN, 0)))
 		kill_all(&line, NULL, NULL, NULL);
 	ch = 'A';
 	pccount = 0;

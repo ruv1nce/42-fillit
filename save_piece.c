@@ -25,6 +25,8 @@ int			check_piece(char *s)
 		else if (s[i] != '.')
 			return (0);
 	}
+	ft_putnbr(sum);
+	write(1, "\n", 1);
 	if (ft_binsearch(valid, sum, 19) == -1)
 		return (0);
 	return (1);
@@ -73,35 +75,45 @@ static void	move_piece(char *ln16, int shift)
 int			save_piece(char *ln16, t_tetra *piece, char ch)
 {
 	int	i;
-	int	j;
 	int	k;
+	int	zero;
 
 	if (!ln16)
 		return (0);
 	move_piece(ln16, calc_shift(ln16));
-	if (!(check_piece(ln16)))
+	if (!(check_piece(ln16)))/*, &pcwdl, &pcwdr, &pcht)))*/
 	{
 		free(ln16);
 		return (0);
 	}
 	piece->c = ch;
+	/* create piece coordinates */
 	i = -1;
 	k = -1;
-	j = -1;
+	zero = -1;
 	while (ln16[++i])
 	{
 		if (ln16[i] == '#')
 		{
-			if (j == -1)
+			/* save the number of column where the first # is , this will allow
+			 * 		for storing negative x for other # cells */
+			if (zero == -1)
 			{
-				j = i;
+				zero = i;
 				piece->x[++k] = 0;
 			}
 			else
-				piece->x[++k] = i % 4 - j;
-			piece->y[k] = i / 4;
+			{
+				if (((piece->x[++k] = i % 4 - zero) < 0) && (piece->x[k] < piece->wdl))
+					piece->wdl = piece->x[k];
+				else if (piece->x[k] > piece->wdr)
+					piece->wdr = piece->x[k];
+			}
+			if ((piece->y[k] = i / 4) > piece->ht)
+				piece->ht = piece->y[k];
 		}
 	}
+	printf("put %i, c %c, wdl %i, wdr %i, ht %i\n", piece->put, piece->c, piece->wdl, piece->wdr, piece->ht);
 	free(ln16);
 	return (1);
 }
