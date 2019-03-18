@@ -4,7 +4,7 @@ SRC = main.c fillit.c map.c support.c save_piece.c
 
 OBJ = $(SRC:.c=.o)
 
-LIBFT = includes/libft.a
+LIBFT = libft/libft.a
 
 HEADER = -c -I fillit.h
 
