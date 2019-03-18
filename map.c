@@ -47,9 +47,13 @@ void	mapinator(t_tetra *pcs, int pccount, int size)
 {
 	char	**map;
 	char	**oldmap;
+	t_lost	lost;
+	int		maxlost;
 
 	map = NULL;
 	oldmap = NULL;
+	lost.cnt = 0;
+	lost.total = 0;
 	while (size && (size * size >= pccount * 4))
 	{
 		if (!(map = create_map(size)))
@@ -57,7 +61,9 @@ void	mapinator(t_tetra *pcs, int pccount, int size)
 		arrinit(&pcs, pccount, 1);
 //		printf("empty map:\n");	// KILLME
 //		print_map(map);	// KILLME
-		if ((size = fillit(map, size, pcs, pccount, 0)))
+		maxlost = size * size - pccount * 4;
+		printf("maxlost %i\n", maxlost);
+		if ((size = fillit(map, size, pcs, pccount, 0, &lost, maxlost)))
 		{
 			if (oldmap)
 				delete_map(oldmap);

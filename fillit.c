@@ -1,5 +1,40 @@
 #include "fillit.h"
 
+int	check_lost(char **map, t_lost *lost, int size, int maxlost)
+{
+	int	x;
+	int	y;
+	int	cnt;
+
+	y = -1;
+	while (map[++y])
+	{
+		x = -1;
+		while (map[y][++x])
+		{
+			if (map[y][x] == '.')
+			{
+				flood_fill(x, y, map, size, &cnt, '@');
+				if (cnt < 4)
+					lost->total += cnt;
+			}
+		}
+	}
+	y = -1;
+	while (map[++y])
+	{
+		x = -1;
+		while (map[y][++x])
+		{
+			if (map[y][x] == '@')
+				map[y][x] = '.';
+		}
+	}
+	if (lost->total > maxlost)
+		return (0);
+	return (1);	
+}
+
 static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
 {
 	int	i;
@@ -64,7 +99,7 @@ static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *c
 	return (1);
 }
 
-static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
+static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur, t_lost *lost, int maxlost)
 {
 	while (map[cur[4].y] && !pc->put)
 	{
@@ -75,6 +110,12 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 				if (try_piece(map, pc, cur[4].x, cur[4].y, size, cur))
 				{
 					pc->put = 1;
+					/* checking how many map cells are lost in current config */
+					if (lost)
+					{
+						if (!(check_lost(map, lost, size, maxlost)))
+							return (0);
+					}
 				}				
 			}
 			cur[4].x += 1;
@@ -100,7 +141,7 @@ int			find_piece(t_tetra *pcs, int pccount)
 	return (-1);
 }
 
-int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
+int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit, t_lost *lost, int maxlost)
 {
 	int	i;
 	/* cells where the current piece will be put (cur[0] to cur [3]) */
@@ -109,6 +150,8 @@ int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 	t_coord cur[CUR_SIZE];
 
 //	coordinit(cur);
+	if (maxlost > LOST)
+		lost = NULL;
 	/* base case: all pieces have been put */
 	if ((i = find_piece(pcs, pccount)) == -1)
 		return (size - 1);
@@ -136,9 +179,9 @@ int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 			if (!(pcs[i].put))
 			{
 				/* if piece is put, run fillit again */
-				if (put_piece(map, &pcs[i], size, cur))
-					fit = fillit(map, size, pcs, pccount, fit);
-				if (!fit && pcs[i].put)
+				if (put_piece(map, &pcs[i], size, cur, lost, maxlost) && lost->total <= maxlost)
+					fit = fillit(map, size, pcs, pccount, fit, lost, maxlost);
+				if ((!fit || lost->total > maxlost) && pcs[i].put)
 					remove_piece(map, &pcs[i], cur);
 			}
 		}
