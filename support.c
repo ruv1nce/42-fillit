@@ -28,10 +28,12 @@ int		arrinit(t_tetra **pcs, int size, int mode)
 	while (++i < size)
 	{
 		if (mode == 0)
-			(*pcs + i)->put = 0;
-		(*pcs + i)->wdl = 0;
-		(*pcs + i)->wdr = 0;
-		(*pcs + i)->ht = 0;
+		{
+			(*pcs + i)->wdl = 0;
+			(*pcs + i)->wdr = 0;
+			(*pcs + i)->ht = 0;
+		}
+		(*pcs + i)->put = 0;
 	}
 	return (1);
 }

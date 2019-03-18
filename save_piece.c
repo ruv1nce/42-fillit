@@ -25,8 +25,8 @@ int			check_piece(char *s)
 		else if (s[i] != '.')
 			return (0);
 	}
-	ft_putnbr(sum);
-	write(1, "\n", 1);
+//	ft_putnbr(sum);
+//	write(1, "\n", 1);
 	if (ft_binsearch(valid, sum, 19) == -1)
 		return (0);
 	return (1);
@@ -113,7 +113,7 @@ int			save_piece(char *ln16, t_tetra *piece, char ch)
 				piece->ht = piece->y[k];
 		}
 	}
-	printf("put %i, c %c, wdl %i, wdr %i, ht %i\n", piece->put, piece->c, piece->wdl, piece->wdr, piece->ht);
+//	printf("put %i, c %c, wdl %i, wdr %i, ht %i\n", piece->put, piece->c, piece->wdl, piece->wdr, piece->ht);
 	free(ln16);
 	return (1);
 }
