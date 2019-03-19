@@ -10,7 +10,7 @@ static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
 	pc->put = 0;
 }
 
-static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *cur)
+static int	put_piece(char **map, t_tetra *pc, int size, int x, int y, t_coord *cur)
 {
 	int	i;
 	int	wd[4];
@@ -31,7 +31,10 @@ static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *c
 						ft_putnbr(pc->ht);
 						write(1, "\n\n", 2);
 	if ((x - pc->wdl < 0) || (x + pc->wdr > (size - 1)) || (y + pc->ht > (size - 1)))
+	{
+		write(1, "edges bad\n", 10);
 		return (0);
+	}
 	/* calc relative coordinates and check if the positions are empty */
 						write(1, "try\n", 4);
 						write(1, "pc c = ", 7);
@@ -48,10 +51,20 @@ static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *c
 	{
 		wd[i] = pc->x[i] + x;
 		ht[i] = pc->y[i] + y;
-		if (wd[i] >= size || ht[i] >= size)
-			return (0);
+//		if (wd[i] >= size || ht[i] >= size)
+//			return (0);
+		write(1, "wd.", 3);
+		ft_putnbr(i);
+		write(1, ": wd ", 5);
+		ft_putnbr(wd[i]);
+		write(1, ", ht ", 5);
+		ft_putnbr(ht[i]);
+		write(1, "\n", 1);
 		if (map[ht[i]][wd[i]] != '.')
+		{
+			write(1, "rel.coord. bad\n", 15);
 			return (0);
+		}
 	}
 	/* draw the piece */
 	i = -1;
@@ -61,9 +74,11 @@ static int	try_piece(char **map, t_tetra *pc, int x, int y, int size, t_coord *c
 		cur[i].x = wd[i];
 		cur[i].y = ht[i];
 	}
+	pc->put = 1;
+	write(1, "success\n", 8);
 	return (1);
 }
-
+/*
 static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 {
 	while (map[cur[4].y] && !pc->put)
@@ -86,7 +101,7 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 	}
 	return (0);
 }
-
+*/
 int			find_piece(t_tetra *pcs, int pccount)
 {
 	int	i;
@@ -100,24 +115,23 @@ int			find_piece(t_tetra *pcs, int pccount)
 	return (-1);
 }
 
-int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
+int			fillit(char **map, int size, t_tetra *pcs, int pccount, int i, int fit)
 {
-	int	i;
 	/* cells where the current piece will be put (cur[0] to cur [3]) */
-	/* indexes cur[4].x and cut[4].y will be used to store the current cell coordinates
-	 * when iterating through map and trying differenet starting positions for each piece */
 	t_coord cur[CUR_SIZE];
+	int		x;
+	int		y;
 
-//	coordinit(cur);
-	/* base case: all pieces have been put */
-	if ((i = find_piece(pcs, pccount)) == -1)
+	/* base case: iterated through all the pieces */
+	if (i >= pccount)
 		return (size - 1);
-	/* iterate through unput pieces */
-	while (i < pccount && !fit)
+	coordinit(cur, CUR_SIZE);
+	/* iterate through map cells trying current piece */
+	y = -1;
+	while (++y < size)
 	{
-		/* iterate through map cells trying current piece */
-		coordinit(cur, CUR_SIZE);
-		while (map[cur[4].y] && map[cur[4].y][cur[4].x] && !(pcs[i].put))
+		x = -1;
+		while (++x < size)
 		{
 					write(1, "fillit\n", 7);
 					write(1, "pc: i = ", 8);
@@ -133,16 +147,13 @@ int			fillit(char **map, int size, t_tetra *pcs, int pccount, int fit)
 					write(1, "\n", 1);
 					print_map(map);
 					write(1, "\n", 1);
-			if (!(pcs[i].put))
-			{
-				/* if piece is put, run fillit again */
-				if (put_piece(map, &pcs[i], size, cur))
-					fit = fillit(map, size, pcs, pccount, fit);
-				if (!fit && pcs[i].put)
-					remove_piece(map, &pcs[i], cur);
-			}
+			/* if piece is put, run fillit again */
+			if (put_piece(map, &pcs[i], size, x, y, cur))
+				if ((fit = fillit(map, size, pcs, pccount, i + 1, fit)))
+					return (fit);
+			if (!fit && pcs[i].put)
+				remove_piece(map, &pcs[i], cur);
 		}
-		i++;
 	}
 	return (fit);
 }
