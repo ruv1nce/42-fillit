@@ -47,11 +47,9 @@ static int	create_arr(char *file, t_tetra **pcs)
 	int		len;
 	int		pccount;
 	char	ch;
-	
+
 	read_file(file, &line);
-//	printf("%s\n", line);	// 	KILLME
 	len = ft_strlen(line);
-//	printf("len = %i\n", len);	// 	KILLME
 	if (!(arrinit(pcs, len / LEN, 0)))
 		kill_all(&line, NULL, NULL, NULL);
 	ch = 'A';
@@ -82,7 +80,6 @@ int			main(int argc, char **argv)
 	}
 	pcs = NULL;
 	pccount = create_arr(argv[1], &pcs);
-//	printf("pccount = %i\n", pccount);	// KILLME
 	size = (ft_sqrt(pccount * 4, 1) + 2);
 	if (size < 4)
 		size = 4;
