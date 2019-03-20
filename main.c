@@ -83,7 +83,7 @@ int			main(int argc, char **argv)
 	pcs = NULL;
 	pccount = create_arr(argv[1], &pcs);
 //	printf("pccount = %i\n", pccount);	// KILLME
-	size = (ft_sqrt(pccount * 4, 1) + 1);
+	size = (ft_sqrt(pccount * 4, 1) + 2);
 	if (size < 4)
 		size = 4;
 	mapinator(pcs, pccount, size);

@@ -17,7 +17,7 @@ static int	put_piece(char **map, t_tetra *pc, int size, int x, int y, t_coord *c
 	int	ht[4];
 
 	/* check if map edges are too close */
-						write(1, "check edge\n", 11);
+/*						write(1, "check edge\n", 11);
 						write(1, &pc->c, 1);
 						write(1, "\nx:", 3);
 						ft_putnbr(x);
@@ -29,14 +29,17 @@ static int	put_piece(char **map, t_tetra *pc, int size, int x, int y, t_coord *c
 						ft_putnbr(pc->wdr);
 						write(1, " ht ", 4);
 						ft_putnbr(pc->ht);
-						write(1, "\n\n", 2);
+						write(1, "\n\n", 2);*/
+
 	if ((x - pc->wdl < 0) || (x + pc->wdr > (size - 1)) || (y + pc->ht > (size - 1)))
 	{
-		write(1, "edges bad\n", 10);
+
+//		write(1, "edges bad\n", 10);
+
 		return (0);
 	}
 	/* calc relative coordinates and check if the positions are empty */
-						write(1, "try\n", 4);
+/*						write(1, "try\n", 4);
 						write(1, "pc c = ", 7);
 						write(1, &pc->c, 1);
 						write(1, "\nx:", 3);
@@ -45,24 +48,29 @@ static int	put_piece(char **map, t_tetra *pc, int size, int x, int y, t_coord *c
 						ft_putnbr(y);
 						write(1, "\n", 1);
 						print_map(map);
-						write(1, "\n", 1);
+						write(1, "\n", 1);*/
+
 	i = -1;
 	while (++i < 4)
 	{
 		wd[i] = pc->x[i] + x;
 		ht[i] = pc->y[i] + y;
-//		if (wd[i] >= size || ht[i] >= size)
-//			return (0);
-		write(1, "wd.", 3);
+		if (wd[i] >= size || ht[i] >= size)
+			return (0);
+
+/*		write(1, "wd.", 3);
 		ft_putnbr(i);
 		write(1, ": wd ", 5);
 		ft_putnbr(wd[i]);
 		write(1, ", ht ", 5);
 		ft_putnbr(ht[i]);
-		write(1, "\n", 1);
+		write(1, "\n", 1);*/
+
 		if (map[ht[i]][wd[i]] != '.')
 		{
-			write(1, "rel.coord. bad\n", 15);
+
+//			write(1, "rel.coord. bad\n", 15);
+			
 			return (0);
 		}
 	}
@@ -75,7 +83,9 @@ static int	put_piece(char **map, t_tetra *pc, int size, int x, int y, t_coord *c
 		cur[i].y = ht[i];
 	}
 	pc->put = 1;
-	write(1, "success\n", 8);
+
+//	write(1, "success\n", 8);
+
 	return (1);
 }
 /*
@@ -133,7 +143,8 @@ int			fillit(char **map, int size, t_tetra *pcs, int pccount, int i, int fit)
 		x = -1;
 		while (++x < size)
 		{
-					write(1, "fillit\n", 7);
+
+/*					write(1, "fillit\n", 7);
 					write(1, "pc: i = ", 8);
 					ft_putnbr(i);
 					write(1, " c = ", 5);
@@ -146,7 +157,8 @@ int			fillit(char **map, int size, t_tetra *pcs, int pccount, int i, int fit)
 					ft_putnbr(cur[4].y);
 					write(1, "\n", 1);
 					print_map(map);
-					write(1, "\n", 1);
+					write(1, "\n", 1);*/
+
 			/* if piece is put, run fillit again */
 			if (put_piece(map, &pcs[i], size, x, y, cur))
 				if ((fit = fillit(map, size, pcs, pccount, i + 1, fit)))
