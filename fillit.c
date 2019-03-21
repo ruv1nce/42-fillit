@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fillit.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dfonarev <dfonarev@42.us.org>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/21 00:27:38 by dfonarev          #+#    #+#             */
+/*   Updated: 2019/03/21 04:40:22 by dfonarev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fillit.h"
 
 static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
@@ -10,24 +22,30 @@ static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
 	pc->put = 0;
 }
 
+/*
+** - first if: check if piece will reach beyond map borders
+** - calculate realtive coordinates of the piece for current map cell
+** - check if each relative piece coordinate is an empty map cell
+** - draw the piece on the map and store its map position in *cur
+*/
+
 static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 {
 	int	i;
 	int	wd[4];
 	int	ht[4];
 
-	if ((cur[4].x - pc->wdl < 0) || (cur[4].x + pc->wdr > (size - 1))
-			|| (cur[4].y + pc->ht > (size - 1)))
+	if ((cur[4].y + pc->ht) > (size - 1) || (cur[4].x + pc->wdr) > (size - 1)
+			|| (cur[4].x + pc->wdl) < 0)
 		return (0);
 	i = -1;
 	while (++i < 4)
 	{
 		wd[i] = pc->x[i] + cur[4].x;
 		ht[i] = pc->y[i] + cur[4].y;
-		if ((wd[i] >= size || ht[i] >= size) || (map[ht[i]][wd[i]] != '.'))
+		if (map[ht[i]][wd[i]] != '.')
 			return (0);
 	}
-	/* draw the piece */
 	i = -1;
 	while (++i < 4)
 	{
@@ -38,38 +56,26 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 	pc->put = 1;
 	return (1);
 }
-/*
-int			find_piece(t_tetra *pcs, int pccount)
-{
-	int	i;
 
-	i = -1;
-	while (++i < pccount)
-	{
-		if (!(pcs[i].put))
-			return (i);
-	}
-	return (-1);
-}
+/*
+** - cells where the current piece will be put (cur[0] to cur [3])
+** - cur[4] are map coordinates through which piece position will be iterated
+** - base case: iterated through all the pieces
 */
+
 int			fillit(char **map, int size, t_tetra *pcs, int i)
 {
-	/* cells where the current piece will be put (cur[0] to cur [3]) */
-	/* cur[4] are the map coordinates through which piece position will be iterated */
 	t_coord cur[CUR_SIZE];
 
-	/* base case: iterated through all the pieces */
 	if (pcs[i].c == '0')
 		return (1);
 	coordinit(cur, CUR_SIZE);
-	/* iterate through map cells trying current piece */
 	cur[4].y = -1;
 	while (++cur[4].y < size)
 	{
 		cur[4].x = -1;
 		while (++cur[4].x < size)
 		{
-			/* if piece is put, run fillit again */
 			if (put_piece(map, &pcs[i], size, cur))
 				if ((fillit(map, size, pcs, i + 1)))
 					return (1);

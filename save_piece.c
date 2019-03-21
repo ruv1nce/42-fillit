@@ -1,61 +1,52 @@
-#include "fillit.h"
-/*
-int			check_piece(char *s)
-{
-	*//* a reference grid where each cell has such value so that
-	 * any sum of n other cells cannot be equal to its value *//*
-	int	*ref;
-	*//* valid sums for each of the 19 possible tetraminos *//*
-	int valid[19] = {VALIDSUMS};
-	int	i;
-	int sum;
-	int	cnt;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   save_piece.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dfonarev <dfonarev@42.us.org>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/21 00:28:37 by dfonarev          #+#    #+#             */
+/*   Updated: 2019/03/21 00:38:47 by dfonarev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-	if (!(checkinit(&ref)))
-		return (0);
-	i = -1;
-	sum = 0;
-	cnt = 0;
-	while (s[++i])
-	{
-		if (s[i] == '#')
-		{
-			sum += ref[i];
-			cnt++;
-		}
-		else if (s[i] != '.')
-			return (0);
-	}
-	if (ft_binsearch(valid, sum, 19) == -1)
-		return (0);
-	return (1);
-}
+#include "fillit.h"
+
+/*
+** - check that the amount of '#' is 4
+** - count how many '#' neighbours each '#' has ("adjacency")
+** - check that sum of all adjacencies is at least 6
 */
 
-int			check_piece(char *s)
+static int	check_piece(char *s)
 {
 	int	i;
 	int	cnt;
+	int adj;
 
 	cnt = 0;
+	adj = 0;
 	i = -1;
 	while (s[++i])
 	{
 		if (s[i] == '#')
 		{
-			/* check right */
-			if (((i + 1) % 4 != 0 && s[i + 1] == '#') || ((i < 12) && s[i + 4] == '#') || ((i % 4 != 0) && s[i - 1] == '#') || (i > 3 && s[i - 4] == '#'))
-				cnt++;
-			else
-				return (0);
+			cnt++;
+			count_adj(s, i, &adj);
 		}
 		else if (s[i] != '.')
 			return (0);
 	}
-	if (cnt == 4)
+	if (cnt == 4 && adj >= 6)
 		return (1);
 	return (0);
 }
+
+/*
+** - find first '#'
+** - calc which row is it on, store in shiftup
+** - find the lowest horizontal indent of a '#', store in shiftleft
+*/
 
 static int	calc_shift(char *ln16)
 {
@@ -68,15 +59,13 @@ static int	calc_shift(char *ln16)
 	i = -1;
 	while (ln16[++i])
 	{
-		/* check for empty rows */
 		if (ln16[i] == '#')
-			break;
+			break ;
 	}
 	if (i >= SIDE)
 		shiftup = (i / SIDE);
 	shiftleft = SIDE;
 	i = -1;
-	/* check for empty positions to the left */
 	while (++i < SIDE)
 	{
 		j = -1;
@@ -97,6 +86,14 @@ static void	move_piece(char *ln16, int shift)
 		ln16[i--] = '.';
 }
 
+/*
+** - first '#' always has x=0, y=0
+** - "zero" contains right indent of the first '#'
+** - subtract "zero" from x position of other '#' (result might be neg)
+** - calc the maximum left, right and down deviations of piece's
+**   	coordinates, store in piece->wdl,wdr,ht
+*/
+
 void		store_coord(char *ln16, t_tetra *piece, int i, int k)
 {
 	int	zero;
@@ -106,8 +103,6 @@ void		store_coord(char *ln16, t_tetra *piece, int i, int k)
 	{
 		if (ln16[i] == '#')
 		{
-			/* save the number of column where the first # is , this will allow
-			 * 		for storing negative x for other # cells */
 			if (zero == -1)
 			{
 				zero = i;
@@ -115,7 +110,8 @@ void		store_coord(char *ln16, t_tetra *piece, int i, int k)
 			}
 			else
 			{
-				if (((piece->x[++k] = i % 4 - zero) < 0) && (piece->x[k] < piece->wdl))
+				if (((piece->x[++k] = i % 4 - zero) < 0)
+						&& (piece->x[k] < piece->wdl))
 					piece->wdl = piece->x[k];
 				else if (piece->x[k] > piece->wdr)
 					piece->wdr = piece->x[k];
@@ -134,17 +130,15 @@ int			save_piece(char *ln16, t_tetra *piece, char ch)
 	if (!ln16)
 		return (0);
 	move_piece(ln16, calc_shift(ln16));
-	if (!(check_piece(ln16)))/*, &pcwdl, &pcwdr, &pcht)))*/
+	if (!(check_piece(ln16)))
 	{
 		free(ln16);
 		return (0);
 	}
 	piece->c = ch;
-	/* create piece coordinates */
 	i = -1;
 	k = -1;
 	store_coord(ln16, piece, i, k);
-//	printf("put %i, c %c, wdl %i, wdr %i, ht %i\n", piece->put, piece->c, piece->wdl, piece->wdr, piece->ht);
 	free(ln16);
 	return (1);
 }

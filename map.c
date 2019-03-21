@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dfonarev <dfonarev@42.us.org>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/21 00:28:27 by dfonarev          #+#    #+#             */
+/*   Updated: 2019/03/21 04:03:06 by dfonarev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fillit.h"
 
 static char	**create_map(int size)
@@ -43,12 +55,11 @@ void		print_map(char **map)
 	}
 }
 
-void	mapinator(t_tetra *pcs, int pccount, int size)
+void		mapinator(t_tetra *pcs, int pccount, int size)
 {
 	char	**map;
 	char	**oldmap;
 
-	map = NULL;
 	oldmap = NULL;
 	while (size && (size * size >= pccount * 4))
 	{
@@ -61,9 +72,14 @@ void	mapinator(t_tetra *pcs, int pccount, int size)
 				delete_map(oldmap);
 			oldmap = map;
 			size--;
+			map = NULL;
 		}
+		else
+			break ;
 	}
 	print_map(oldmap);
 	delete_map(oldmap);
+	if (map)
+		delete_map(map);
 	free(pcs);
 }

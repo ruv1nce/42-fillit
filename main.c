@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dfonarev <dfonarev@42.us.org>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/21 00:28:20 by dfonarev          #+#    #+#             */
+/*   Updated: 2019/03/21 01:39:57 by dfonarev         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fillit.h"
 
 void		kill_all(char **line, t_tetra **pcs, char **map, char **oldmap)
@@ -19,6 +31,7 @@ static void	read_file(char *file, char **line)
 	int		fd;
 	int		resume;
 	char	*tmp;
+	char	*tmp2;
 	int		linecnt;
 
 	fd = open(file, O_RDONLY);
@@ -32,7 +45,9 @@ static void	read_file(char *file, char **line)
 		linecnt = (linecnt == 4) ? 0 : linecnt + 1;
 		if ((!(linecnt) && ft_strlen(tmp)) || (linecnt && ft_strlen(tmp) != 4))
 			kill_all(line, NULL, NULL, NULL);
+		tmp2 = *line;
 		*line = ft_strjoin(*line, tmp);
+		free(tmp2);
 		free(tmp);
 	}
 	if (linecnt != 4)
@@ -81,7 +96,5 @@ int			main(int argc, char **argv)
 	pcs = NULL;
 	pccount = create_arr(argv[1], &pcs);
 	size = (ft_sqrt(pccount * 4, 1) + 2);
-	if (size < 4)
-		size = 4;
 	mapinator(pcs, pccount, size);
 }
