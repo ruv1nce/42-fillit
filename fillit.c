@@ -6,7 +6,7 @@
 /*   By: dfonarev <dfonarev@42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 00:27:38 by dfonarev          #+#    #+#             */
-/*   Updated: 2019/03/21 04:40:22 by dfonarev         ###   ########.fr       */
+/*   Updated: 2019/03/22 23:47:45 by dfonarev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	remove_piece(char **map, t_tetra *pc, t_coord *cur)
 }
 
 /*
-** - first if: check if piece will reach beyond map borders
+** - check if piece will reach beyond map borders
 ** - calculate realtive coordinates of the piece for current map cell
 ** - check if each relative piece coordinate is an empty map cell
 ** - draw the piece on the map and store its map position in *cur
@@ -35,8 +35,9 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 	int	wd[4];
 	int	ht[4];
 
-	if ((cur[4].y + pc->ht) > (size - 1) || (cur[4].x + pc->wdr) > (size - 1)
-			|| (cur[4].x + pc->wdl) < 0)
+	if ((cur[4].y + pc->ht) > (size - 1))
+		return (-1);
+	else if ((cur[4].x + pc->wdr) > (size - 1) || (cur[4].x + pc->wdl) < 0)
 		return (0);
 	i = -1;
 	while (++i < 4)
@@ -66,6 +67,7 @@ static int	put_piece(char **map, t_tetra *pc, int size, t_coord *cur)
 int			fillit(char **map, int size, t_tetra *pcs, int i)
 {
 	t_coord cur[CUR_SIZE];
+	int		putty;
 
 	if (pcs[i].c == '0')
 		return (1);
@@ -76,9 +78,13 @@ int			fillit(char **map, int size, t_tetra *pcs, int i)
 		cur[4].x = -1;
 		while (++cur[4].x < size)
 		{
-			if (put_piece(map, &pcs[i], size, cur))
+			if ((putty = put_piece(map, &pcs[i], size, cur) == 1))
+			{
 				if ((fillit(map, size, pcs, i + 1)))
 					return (1);
+			}
+			else if (putty == -1)
+				return (0);
 			if (pcs[i].put)
 				remove_piece(map, &pcs[i], cur);
 		}

@@ -2,6 +2,7 @@ test
 libft.h
 *.swp
 *.nfs.*
+libft/
 
 # Prerequisites
 *.d
